@@ -1,5 +1,5 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 struct node
 {
@@ -7,62 +7,74 @@ struct node
 	struct node* next;
 };
 
-class Stack
+class Queue
 {
-	struct node* top;
+	struct node* front;
+	struct node* rear;
+
    public:
-	Stack();
+	Queue();
 	bool IsEmpty();
+	void EnQueue(int data);
+	int DeQueue();
 	void Display();
-	void Push(int );
-	int Pop();
 };
-
-Stack::Stack()
+	
+Queue::Queue()
 {
-	top = NULL;
+	front = NULL;
+	rear = NULL;
 }
 
-bool Stack::IsEmpty()
+bool Queue::IsEmpty()
 {
-	return ( top == NULL);
+	return (front == NULL);
 }
 
-void Stack::Display()
+void Queue::Display()
 {
-	printf("\nStack");
-	struct node* current = top;
-	while(current!=NULL)
+	printf("\n Queue:");
+	struct node * current = front;
+	if(current == NULL)
+		printf("\nQueue Empty");
+	else
 	{
-		printf("\n%d",current->data);
-		current=current->next;
+		while(current!=NULL)
+		{
+			printf("%d",current->data);
+			current=current->next;
+		}
 	}
 }
-	
-void Stack::Push(int data)
+
+void Queue::EnQueue(int data)
 {
-	struct node* newNode = (struct node *) malloc(sizeof(struct node));
-	newNode->data=data;
+	struct node* newNode = (struct node*) malloc(sizeof(struct node));
+	newNode->data = data;
 	newNode->next = NULL;
 
-	if(!IsEmpty())
+	if( front ==NULL)
 	{
-		newNode->next = top;
+		front = newNode;	
 	}
-	top = newNode;
+	else
+	{
+		rear->next = newNode;	
+	}
+	rear = newNode;
 }
 
-int Stack::Pop()
+int Queue::DeQueue()
 {
-	int val = -1;
+	int value = -1;
 	if(!IsEmpty())
 	{
-		struct node* temp = top;
-		val = temp->data;
-		top = top->next;
+		struct node* temp = front;
+		value = temp->data;
+		front = front->next;
 		free(temp);
 	}
-	return val;
+	return value;
 }
 
 
@@ -75,7 +87,7 @@ class Graph
 	Graph(int);
 	bool IsConnected(int,int);
 	void AddEdge(int,int);
-	void DFS(int,int);
+	void BFS(int,int);
 };
 
 Graph::Graph(int in)
@@ -99,28 +111,28 @@ void Graph::AddEdge(int x,int y)
 	A[y-1][x-1] = 1;
 }
 
-void Graph::DFS(int x, int required)
+void Graph::BFS(int x, int required)
 {
 	bool visited[100];
 	for ( int i=0;i<=n;i++)
 		visited[i]=0;
 
-	Stack s;
-	s.Push(x);
+	Queue q;
+	q.EnQueue(x);
 	visited[x]=1;
-	while(!s.IsEmpty())
+	while(!q.IsEmpty())
 	{
-		int k = s.Pop();
+		int k = q.DeQueue();
 		printf("\n %d",k);
 
 		if( k == required)
 			break;
-		for(int i =n;i>=0;i--)
+		for(int i =1;i<=n;i++)
 		{
 			if(IsConnected(k,i) && !visited[i])
 			{
 				visited[i]=1;
-				s.Push(i);
+				q.EnQueue(i);
 			}
 		}
 	}
@@ -136,26 +148,7 @@ int main()
 	g.AddEdge(2,6);
 	g.AddEdge(4,7);
 	g.AddEdge(4,8);
-	g.DFS(1,8);
+	g.BFS(1,8);
 	
 	return 0;
 }
-/*
-int main()
-{
-	Stack s;
-	s.Push(10);
-	s.Display();
-	s.Push(20);
-	s.Display();
-	s.Push(30);
-	s.Display();
-	int val = s.Pop();
-	printf("\nRemoved %d",val);
-	s.Display();
-	s.Push(40);
-	s.Display();
-	
-	return 0;
-}
-*/
