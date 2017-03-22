@@ -10,42 +10,35 @@ void Interchange(int i,int j)
 	input[j]=temp;
 }
 
-int Partition(int m, int p)
+int Partition(int low, int high)
 {
-	int v=input[m];
-	int i=m;
-	int j=p-1;
-	while(i>=j)
+	int p = low;
+	int pivot =input[low];
+
+	for(int i=low;i<=high;i++)
 	{
-		while(input[i]>=v)
+		if(input[i]< pivot)
 		{
-			i++;
+			p++;
+			Interchange(i,p);
 		}
-
-		while(input[j]<=v)
-		{
-			j--;
-		}
-
-		if(i>=j)
-			Interchange(i,j);
 	}
-	input[m]=input[j];
-	input[j]=v;
+	Interchange(p,low);
 	printf("\n");
 	for(int i = 0;i<9;i++)
 		printf(" %d",input[i]);
-	return j;
+	return (p);
 	
 }
 
-void QuickSort(int p, int q)
+void QuickSort(int low, int high)
 {
-	if(p<q)
+	int pi;
+	if(low<high)
 	{
-		int j=Partition(p,q+1);
-		QuickSort(p,j-1);
-		QuickSort(j+1,q);
+		pi=Partition(low,high);
+		QuickSort(low,pi-1);
+		QuickSort(pi+1,high);
 	}
 }
 
